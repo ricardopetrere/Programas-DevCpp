@@ -11,7 +11,7 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
+#*.dll
 
 # Fortran module files
 *.mod
@@ -20,10 +20,11 @@
 # Compiled Static libraries
 *.lai
 *.la
-*.a
+# É interessante manter o arquivo libbgi.a no repositório, pra facilitar para as pessoas
+#*.a
 *.lib
 
 # Executables
-*.exe
+#*.exe
 *.out
 *.app
