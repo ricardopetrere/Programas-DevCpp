@@ -1,0 +1,29 @@
+Link original:
+https://www.facebook.com/groups/1491238164501986/1550294008596401/
+
+Ricardo Petrére
+19 de março
+
+Crianças!
+Pra quem teve/está tendo/terá alguma dificuldade pra fazer o DevC++ c/ BGI funcionar, eu montei esse curto guia do q tem q configurar.
+Até onde eu sei, é só isso q se deve ficar de olho ao mexer com essa IDE ultrapassada... (Visual Studio é melhor xD)
+
+Passos:
+
+Passo 1: Instalar a versão 5.<qualquer coisa> (A versão 4 não funciona. Não sei pq, mas não funciona). No dropbox, eu coloquei o instalador q o Banin me passou, assim como os arquivos da BGI, q estão no site dele (http://clictec.com.br/jogna2/).
+EDIT: Aqui tem todos os arquivos tbm:
+https://www.dropbox.com/home/Jogos%20Digitais/Programa%C3%A7%C3%A3o%20II/BGI%20-%20DevC%2B%2B
+
+Passo 2: Copiar o arquivo graphics.h e libbgi.a nas pastas indicadas. Essas pastas "include" e "lib" ficam dentro da pasta MINGW64, q está dentro da pasta do DevCpp
+
+Passo 3: Abrir o DevCpp e, na barra do topo do programa (ou nas opções de compilador. Tools -> Compiler Options), selecionar o compilador 32bits de Debug (pq 32 bits? Pq eu acho q esse BGI deve ter sido feito pra PCs 32 bits apenas)
+
+Passo 4: Em todos os projetos q usar a BGI, abrir as propriedades do projeto e, na aba "Parâmetros", na caixa de texto "Linker", incluir as seguintes referências:
+-lbgi
+-lgdi32
+-lcomdlg32
+-luuid
+-loleaut32
+-lole32
+
+Espero q tenha ajudado a quem ainda não conseguiu fazer funcionar essa desgraça xD
