@@ -65,6 +65,10 @@ XINPUT_STATE Controle_XINPUT::GetState()
 	ZeroMemory(&_estadocontrole,sizeof(XINPUT_STATE));
 	
 	_resultadoconexao = XInputGetState(_numerocontrole,&_estadocontrole);
+	/*
+	No caso de programas como ScpDriver, que emulam o controle de PS3 como de XBox 360, estes armazenam uma lista dos 4 últimos controles conectados, o que engana o XInput,
+	fazendo-o acreditar que os controles ainda estão conectados (retornando ERROR_SUCCESS para _resultadoconexao)
+	*/
 	
 	return _estadocontrole;
 }
@@ -91,15 +95,6 @@ int Controle_XINPUT::EstadoBotoes()
 int Controle_XINPUT::EstadoBateria()
 {
 	XInputGetBatteryInformation(_numerocontrole,BATTERY_DEVTYPE_GAMEPAD,&_estadobateria);
-	/*
-	No caso de programas como ScpDriver, que emulam o controle de PS3 como de XBox 360, estes armazenam uma lista dos 4 últimos controles conectados, o que engana o XInput,
-	fazendo-o acreditar que os controles ainda estão conectados
-	O código abaixo seria um modo de declarar que eles não foram conectados nessa sessão do Windows, mas nada impede de eles terem sido conectados anteriormente
-	Colocar uma função Sleep() seria errado, então também não foi utlilizada aqui
-	
-	if(_resultadoconexao!=0)
-		return 0;
-	*/
 	return _estadobateria.BatteryLevel;
 }
 #endif

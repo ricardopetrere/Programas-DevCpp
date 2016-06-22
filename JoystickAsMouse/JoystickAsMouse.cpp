@@ -206,12 +206,7 @@ void MoverMouse()
 	int dx=(lx/(double)SHRT_MAX)*TAXA_MOV_MOUSE;
 	int dy=-(ly/(double)SHRT_MAX)*TAXA_MOV_MOUSE;
 	
-	ZeroMemory(&in_mouse,in_size);
-	in_mouse.type  = INPUT_MOUSE;
-	in_mouse.mi.dwFlags = MOUSEEVENTF_MOVE;
-	in_mouse.mi.dx = dx;
-	in_mouse.mi.dy = dy;
-	SendInput(1,&in_mouse,in_size);
+	BASE_SendInputMouse(MOUSEEVENTF_MOVE,dx,dy,0);
 }
 void Rolar()
 {
@@ -222,14 +217,10 @@ void Rolar()
 	else if(ry<0)
 		ry+=XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE;
 	
+	//https://social.msdn.microsoft.com/Forums/vstudio/en-US/ad2d3e85-7527-49dc-ac1c-a2b031b119ba/how-can-i-simulate-the-scroll-mouse?forum=vcgeneral
 	int dy=(ry/(double)SHRT_MAX)*120;
 	
-	//https://social.msdn.microsoft.com/Forums/vstudio/en-US/ad2d3e85-7527-49dc-ac1c-a2b031b119ba/how-can-i-simulate-the-scroll-mouse?forum=vcgeneral
-	ZeroMemory(&in_mouse,in_size);
-	in_mouse.type  = INPUT_MOUSE;
-	in_mouse.mi.dwFlags = MOUSEEVENTF_WHEEL;
-	in_mouse.mi.mouseData=dy;
-	SendInput(1,&in_mouse,in_size);
+	BASE_SendInputMouse(MOUSEEVENTF_WHEEL,0,0,dy);
 }
 void ChecarJoystick()
 {
@@ -244,6 +235,7 @@ int main()
 	while(!CheckGamepadBack()&&!CheckESC())
 	{
 		XInputGetState(0,&estado_controle);
+//		std::cout<<estado_controle.dwPacketNumber<<std::endl;
 		ChecarJoystick();
 		Sleep(50);
 	}

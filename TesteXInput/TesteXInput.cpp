@@ -36,6 +36,7 @@ struct TPosicao
 };
 int largura=500;
 int altura=500;
+int quarto_largura=largura/4;
 int pg=1;
 char buf_int[11];
 HWND Window;
@@ -275,27 +276,27 @@ int main()
 			bar(pos_R3.x-RAIO,pos_R3.y+RAIO,pos_R3.x+RAIO,pos_R3.y+RAIO-(controle_atual->GetGamepadState().sThumbRY/(double)SHRT_MAX)*2*DIAMETRO);
 		}
 		
-		outtextxy(0,350,"bLeftTrigger: ");
-		outtextxy(0,370,ConvertInt(controle_atual->GetGamepadState().bLeftTrigger));
+		outtextxy(0*quarto_largura,350,"bLeftTrigger: ");
+		outtextxy(0*quarto_largura,370,ConvertInt(controle_atual->GetGamepadState().bLeftTrigger));
 		
-		outtextxy(100,350,"bRightTrigger: ");
-		outtextxy(100,370,ConvertInt(controle_atual->GetGamepadState().bRightTrigger));
+		outtextxy(1*quarto_largura,350,"bRightTrigger: ");
+		outtextxy(1*quarto_largura,370,ConvertInt(controle_atual->GetGamepadState().bRightTrigger));
 		
-		outtextxy(0,400,"sThumbLX: ");
-//		outtextxy(0,420,ConvertInt(controle_atual->GetGamepadState().sThumbLX));
-		outtextxy(0,420,ConvertInt(controle_atual->EstadoThumbL(true)));
+		outtextxy(0*quarto_largura,400,"sThumbLX: ");
+		outtextxy(0*quarto_largura,420,ConvertInt(controle_atual->EstadoThumbL(true)));
+		outtextxy(0*quarto_largura+quarto_largura/2,420,ConvertInt(controle_atual->GetGamepadState().sThumbLX));
 		
-		outtextxy(100,400,"sThumbLY: ");
-//		outtextxy(100,420,ConvertInt(controle_atual->GetGamepadState().sThumbLY));
-		outtextxy(100,420,ConvertInt(controle_atual->EstadoThumbL(false)));
+		outtextxy(1*quarto_largura,400,"sThumbLY: ");
+		outtextxy(1*quarto_largura,420,ConvertInt(controle_atual->EstadoThumbL(false)));
+		outtextxy(1*quarto_largura+quarto_largura/2,420,ConvertInt(controle_atual->GetGamepadState().sThumbLY));
 		
-		outtextxy(200,400,"sThumbRX: ");
-//		outtextxy(200,420,ConvertInt(controle_atual->GetGamepadState().sThumbRX));
-		outtextxy(200,420,ConvertInt(controle_atual->EstadoThumbR(true)));
+		outtextxy(2*quarto_largura,400,"sThumbRX: ");
+		outtextxy(2*quarto_largura,420,ConvertInt(controle_atual->EstadoThumbR(true)));
+		outtextxy(2*quarto_largura+quarto_largura/2,420,ConvertInt(controle_atual->GetGamepadState().sThumbRX));
 		
-		outtextxy(300,400,"sThumbRY: ");
-//		outtextxy(300,420,ConvertInt(controle_atual->GetGamepadState().sThumbRY));
-		outtextxy(300,420,ConvertInt(controle_atual->EstadoThumbR(false)));
+		outtextxy(3*quarto_largura,400,"sThumbRY: ");
+		outtextxy(3*quarto_largura,420,ConvertInt(controle_atual->EstadoThumbR(false)));
+		outtextxy(3*quarto_largura+quarto_largura/2,420,ConvertInt(controle_atual->GetGamepadState().sThumbRY));
 		
 		outtextxy(0,450,"BatteryLevel: ");
 		outtextxy(0,470,ConvertInt(controle_atual->EstadoBateria()));
@@ -315,7 +316,6 @@ int main()
 				break;
 		}
 		
-//		if(GetKeyState(VK_F1)&0x80)
 		if(TeclaEstaPressionada(VK_F1))
 		{
 			F1Pressed=true;
@@ -326,7 +326,6 @@ int main()
 			F1Pressed=false;
 		}
 		
-//		if(GetKeyState(VK_F2)&0x80)
 		if(TeclaEstaPressionada(VK_F2))
 		{
 			F2Pressed=true;
@@ -337,7 +336,6 @@ int main()
 			F2Pressed=false;
 		}
 		
-//		if(GetKeyState(VK_F3)&0x80)
 		if(TeclaEstaPressionada(VK_F3))
 		{
 			F3Pressed=true;
@@ -348,7 +346,6 @@ int main()
 			F3Pressed=false;
 		}
 		
-//		if(GetKeyState(VK_F4)&0x80)
 		if(TeclaEstaPressionada(VK_F4))
 		{
 			F4Pressed=true;
