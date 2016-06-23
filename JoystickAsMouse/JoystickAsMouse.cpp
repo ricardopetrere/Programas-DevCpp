@@ -13,17 +13,15 @@ bool LButtonPressed=false;
 bool RButtonPressed=false;
 bool ESCPressed=false;
 bool BackPressed=false;
+bool UpPressed=false;
+bool RightPressed=false;
+bool DownPressed=false;
+bool LeftPressed=false;
 
 #define TAXA_MOV_MOUSE	50
+#define PASSO_MOV_MOUSE	5
+//#define __MOVIMENTO_CONTINUO__
 
-int EstadoDPAD()
-{
-	return estado_controle.Gamepad.wButtons&mascaraDPAD;
-}
-int EstadoBotoes()
-{
-	return estado_controle.Gamepad.wButtons&mascaraBotoes;
-}
 int EstadoThumbLX()
 {
 	if(estado_controle.Gamepad.sThumbLX>XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE
@@ -166,45 +164,70 @@ bool CheckRightClick()
 {
 	return BASE_ConverteClickGamepadtoMouseClick(XINPUT_GAMEPAD_Y,RButtonPressed,MOUSEEVENTF_RIGHTDOWN,MOUSEEVENTF_RIGHTUP);
 }
-//#include <math.h>
-//double RetornaValorLogaritmico(int valor, int base,int minimo=0)
-//{
-//	double retorno;
-//	if(valor>0)
-//	{
-//		cout<<valor-minimo<<endl;
-//		retorno = (log((double)(valor-minimo))/log((double)base));
-//	}
-//	else if(valor==0)
-//	{
-//		
-//		retorno = 0;
-//	}
-//	else
-//	{
-//		cout<<-valor+minimo<<endl;
-//		retorno = -(log((double)(-valor+minimo))/log((double)base));
-//	}
-//	cout<<retorno<<endl;
-//	return retorno;
-//}
+bool CheckDPAD(int _XINPUT_MASK, bool &_KeyPressed)
+{
+	if(estado_controle.Gamepad.wButtons&_XINPUT_MASK)
+	{
+		_KeyPressed=true;
+	}
+	else
+	{
+		if(_KeyPressed)
+		{
+			_KeyPressed=false;
+			return true;
+		}
+		_KeyPressed=false;
+	}
+	return false;
+}
+#include <math.h>
+double RetornaValorExponencial(int valor, int base)
+{
+	double retorno;
+	if(valor==0)
+	{
+		retorno = 0;
+	}
+	else if(valor>0)
+	{
+		retorno = (pow(2,(double)(valor)/base))-1;
+	}
+	else
+	{
+		retorno = -(pow(2,(double)(-valor)/base))+1;
+	}
+	return retorno;
+}
 
 void MoverMouse()
 {
 	int lx=EstadoThumbLX();
 	int ly=EstadoThumbLY();
-	
 	if(lx>0)
 		lx-=XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
 	else if(lx<0)
 		lx+=XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
 	if(ly>0)
-		ly-=XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE;
+		ly-=XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
 	else if(ly<0)
-		ly+=XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE;
+		ly+=XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
 	
+	#ifdef __MOVIMENTO_CONTINUO__
 	int dx=(lx/(double)SHRT_MAX)*TAXA_MOV_MOUSE;
 	int dy=-(ly/(double)SHRT_MAX)*TAXA_MOV_MOUSE;
+	#else
+	int dx=(RetornaValorExponencial(lx,SHRT_MAX))*TAXA_MOV_MOUSE;
+	int dy=(-RetornaValorExponencial(ly,SHRT_MAX))*TAXA_MOV_MOUSE;
+	#endif /*__MOVIMENTO_CONTINUO__*/
+	if(CheckDPAD(XINPUT_GAMEPAD_DPAD_UP,UpPressed))
+		dy-=PASSO_MOV_MOUSE;
+	if(CheckDPAD(XINPUT_GAMEPAD_DPAD_RIGHT,RightPressed))
+		dx+=PASSO_MOV_MOUSE;
+	if(CheckDPAD(XINPUT_GAMEPAD_DPAD_DOWN,DownPressed))
+		dy+=PASSO_MOV_MOUSE;
+	if(CheckDPAD(XINPUT_GAMEPAD_DPAD_LEFT,LeftPressed))
+		dx-=PASSO_MOV_MOUSE;
 	
 	BASE_SendInputMouse(MOUSEEVENTF_MOVE,dx,dy,0);
 }
@@ -235,7 +258,6 @@ int main()
 	while(!CheckGamepadBack()&&!CheckESC())
 	{
 		XInputGetState(0,&estado_controle);
-//		std::cout<<estado_controle.dwPacketNumber<<std::endl;
 		ChecarJoystick();
 		Sleep(50);
 	}
