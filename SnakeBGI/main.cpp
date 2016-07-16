@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <time.h>
+#include <xinput.h>
 
 #define COLUNAS			(20)
 #define LINHAS 			(20)
@@ -165,10 +166,56 @@ char ProximaCasa(TPosicao base)
 			return matriz[base.i][base.j-1];
 	}
 }
+bool controleconectado=false;
+XINPUT_STATE estadocontrole;
 
+bool UpPressed()
+{
+	bool retorno=GetKeyState(VK_UP)&0x80;
+	if(controleconectado)
+	{
+		XInputGetState(0,&estadocontrole);
+		retorno|=estadocontrole.Gamepad.wButtons&XINPUT_GAMEPAD_DPAD_UP||estadocontrole.Gamepad.sThumbLY>SHRT_MAX/2;
+	}
+	return retorno;
+}
+bool RightPressed()
+{
+	bool retorno=GetKeyState(VK_RIGHT)&0x80;
+	if(controleconectado)
+	{
+		XInputGetState(0,&estadocontrole);
+		retorno|=estadocontrole.Gamepad.wButtons&XINPUT_GAMEPAD_DPAD_RIGHT||estadocontrole.Gamepad.sThumbLX>SHRT_MAX/2;
+	}
+	return retorno;
+}
+bool DownPressed()
+{
+	bool retorno=GetKeyState(VK_DOWN)&0x80;
+	if(controleconectado)
+	{
+		XInputGetState(0,&estadocontrole);
+		retorno|=estadocontrole.Gamepad.wButtons&XINPUT_GAMEPAD_DPAD_DOWN||estadocontrole.Gamepad.sThumbLY<SHRT_MIN/2;
+	}
+	return retorno;
+}
+bool LeftPressed()
+{
+	bool retorno=GetKeyState(VK_LEFT)&0x80;
+	if(controleconectado)
+	{
+		XInputGetState(0,&estadocontrole);
+		retorno|=estadocontrole.Gamepad.wButtons&XINPUT_GAMEPAD_DPAD_LEFT||estadocontrole.Gamepad.sThumbLX<SHRT_MIN/2;
+	}
+	return retorno;
+}
 int main()
 {
 	srand(time(NULL));
+	ZeroMemory(&estadocontrole,sizeof(XINPUT_STATE));
+	if(XInputGetState(0,&estadocontrole)==ERROR_SUCCESS)
+		controleconectado=true;
+	
 	s.InsereTPosicao(GeraTPosicao(2,2));
 	s.InsereTPosicao(GeraTPosicao(2,3));
 	s.InsereTPosicao(GeraTPosicao(2,4));
@@ -182,7 +229,9 @@ int main()
 	
 	bool pensarduasvezes=false;
 	
-//	delay(5000);
+	s.Desenhar();
+	
+	delay(5000);
 	while(!sair)
 	{
 		pg=(pg==1)?2:1;
@@ -299,28 +348,32 @@ int main()
 		
 		delay(1000/10);
 		
-		if(GetKeyState(VK_UP)&0x80&&mov_atual!=DOWN)
+//		if(GetKeyState(VK_UP)&0x80&&mov_atual!=DOWN)
+		if(UpPressed()&&mov_atual!=DOWN)
 		{
 			mov_atual=UP;
 			pensarduasvezes=false;
 		}
-		if(GetKeyState(VK_RIGHT)&0x80&&mov_atual!=LEFT)
+//		else if(GetKeyState(VK_RIGHT)&0x80&&mov_atual!=LEFT)
+		else if(RightPressed()&&mov_atual!=LEFT)
 		{
 			mov_atual=RIGHT;
 			pensarduasvezes=false;
 		}
-		if(GetKeyState(VK_DOWN)&0x80&&mov_atual!=UP)
+//		else if(GetKeyState(VK_DOWN)&0x80&&mov_atual!=UP)
+		else if(DownPressed()&&mov_atual!=UP)
 		{
 			mov_atual=DOWN;
 			pensarduasvezes=false;
 		}
-		if(GetKeyState(VK_LEFT)&0x80&&mov_atual!=RIGHT)
+//		else if(GetKeyState(VK_LEFT)&0x80&&mov_atual!=RIGHT)
+		else if(LeftPressed()&&mov_atual!=RIGHT)
 		{
 			mov_atual=LEFT;
 			pensarduasvezes=false;
 		}
 		
-		if(GetKeyState(VK_ESCAPE)&0x80)
+		else if(GetKeyState(VK_ESCAPE)&0x80)
 		{
 			sair=true;
 		}
